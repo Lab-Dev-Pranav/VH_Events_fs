@@ -293,7 +293,7 @@
       @media (max-width: 560px) {
 
         .about-container-img{
-            width: 420px;
+            width: 341px;
         }
 
         .box {
@@ -301,13 +301,21 @@
           height: 200px;
         }
 
-        .box3 {
-            margin-left: -60px;
-          }
+          .box2 {
+            margin-right: 50px;
+            margin-top: 70px;
+            }
           .box1 {
-            margin-top: 50px;
+            margin-top: 90px;
+            margin-left: -60px;
             left: 100px;
           }
+           .box3 {
+            /* margin-top: 90px; */
+            margin-left: -100px;
+            left: 100px;
+          }
+
         
       }
       
@@ -456,7 +464,7 @@
 
     @media (max-width: 560px) {
         .about-container-text{
-            width: 420px;
+            width: 341px;
         }
 
 
