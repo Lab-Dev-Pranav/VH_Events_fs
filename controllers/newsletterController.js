@@ -1,15 +1,15 @@
-const newsletterRouter = require("../models/newsletter");
+const Newsletter = require("../models/newsletter");
 
 // Subscribe to newsletter
 exports.subscribe = async (req, res) => {
   const newsletterEmail = req.body.newsletteremail;
   try {
-    const existingEmail = await newsletterRouter.findOne({ email: newsletterEmail });
+    const existingEmail = await Newsletter.findOne({ email: newsletterEmail });
     if (existingEmail) {
       req.flash("error", "You are already subscribed with this email ❗");
       return res.redirect("/");
     }
-    const newsletter = new newsletterRouter({ email: newsletterEmail });
+    const newsletter = new Newsletter({ email: newsletterEmail });
     await newsletter.save();
     req.flash("success", "You are subscribed to our newsletter ✅");
     res.redirect("/");
@@ -22,7 +22,7 @@ exports.subscribe = async (req, res) => {
 // Unsubscribe from newsletter
 exports.unsubscribe = async (req, res) => {
   try {
-    const newsletter = await newsletterRouter.findByIdAndDelete(req.params.id);
+  const newsletter = await Newsletter.findByIdAndDelete(req.params.id);
     if (!newsletter) {
       req.flash("error", "Newsletter email not found ❗");
       return res.status(404).send("Newsletter email not found.");

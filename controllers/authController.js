@@ -1,5 +1,5 @@
-const User = require("../models/User");
-const newsletterRouter = require("../models/newsletter");
+const User = require("../models/user");
+const Newsletter = require("../models/newsletter");
 const passport = require("passport");
 
 // Render login page
@@ -15,9 +15,9 @@ exports.register = async (req, res, next) => {
     return res.redirect("/login");
   }
   try {
-    let existingEmail = await newsletterRouter.findOne({ email });
+    let existingEmail = await Newsletter.findOne({ email });
     if (!existingEmail) {
-      const newsletter = new newsletterRouter({ email });
+      const newsletter = new Newsletter({ email });
       await newsletter.save();
       req.flash("success", "You have been subscribed to our newsletter!");
     } else {

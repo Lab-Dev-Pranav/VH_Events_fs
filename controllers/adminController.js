@@ -1,5 +1,5 @@
-const Booking = require("../models/Booking");
-const newsletterRouter = require("../models/newsletter");
+const Booking = require("../models/booking");
+const Newsletter = require("../models/newsletter");
 const ManagementProfile = require("../models/management");
 const Media = require("../models/media");
 const nodemailer = require("nodemailer");
@@ -37,8 +37,8 @@ exports.updateAdminNote = async (req, res) => {
 // Render newsletter emails page
 exports.renderAdminNewsletters = async (req, res) => {
   try {
-    const newsletters = await newsletterRouter.find({});
-    res.render("admin/admin_newsletter.ejs", { newsletters });
+  const newsletters = await Newsletter.find({});
+  res.render("admin/admin_newsletter.ejs", { newsletters });
   } catch (e) {
     req.flash("error", "Error to render newsletter emails form.");
     res.redirect("/admin");

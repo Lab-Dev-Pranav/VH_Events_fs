@@ -1,6 +1,6 @@
 const Media = require("../models/media");
 const ManagementProfile = require("../models/management");
-const Booking = require("../models/Booking");
+const Booking = require("../models/booking");
 const nodemailer = require("nodemailer");
 
 exports.renderHome = async (req, res) => {

@@ -1,4 +1,4 @@
-const Booking = require("../models/Booking");
+const Booking = require("../models/booking");
 const nodemailer = require("nodemailer");
 
 // Render booking page

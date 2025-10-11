@@ -15,7 +15,7 @@ if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
 const { isLoggedIn, isBookingOwner, isAdmin } = require("./MW");
-const newsletterRouter = require("./models/newsletter");
+const Newsletter = require("./models/newsletter");
 const Booking = require("./models/booking");
 const Media = require('./models/media');
 const cloudinary = require('cloudinary').v2;
