@@ -140,20 +140,16 @@
                 <% managementProfiles.forEach(profile  => { %>
                 <div class="carousel-item text-center">
                   <div class="profile-image-bd">
-                      <% if (profile.email == "pranavpatil020389@gmail.co") { %>
-                    <img src="/other/img/founders.jpg" alt="<%= profile.fullName %>" />                    
-                      <% } else { %>
                     <img src="<%= profile.profilePicture %>" alt="<%= profile.fullName %>" />
-                      <% } %>
                   </div>
-                    <% if (profile.email == "pranavpatil020389@gmail.com") { %>
+                    <% if (profile._id == "68ea27ce37f6c20a4bd4b928") { %>
                       👑 
                     <% } %>
                   <h3>— <%= profile.fullName %> </h3>
                   <p style="color: #f0ad4e;"> 
                     <%= profile.bestDepartment %>
-                    <% if (profile.email == "pranavpatil020389@gmail.com") { %>
-                      - Overall - Digital Coordinators 
+                    <% if (profile._id == "68ea27ce37f6c20a4bd4b928") { %>
+                      - Overall - Tech Coordinators 
                     <% } %>
                   </p>
                 </div>
@@ -222,6 +218,10 @@
       <div class="container">
         <h2>Why Choose <span>VH Events?</span></h2>
         <div class="cards">
+            <div class="card">
+              <h3>✨ 70+ Events Organized</h3>
+              <p>From weddings to corporate galas, we’ve managed every kind of celebration.</p>
+            </div>
           <div class="card">
             <h3>🎯 Personalized Service</h3>
             <p>Tailored planning to meet your unique needs and preferences.</p>
@@ -244,6 +244,18 @@
             <h3>🏆 Proven Track Record</h3>
             <p>Successful events backed by happy clients and great reviews.</p>
           </div>
+          <div class="card">
+            <h3>🏢 100+ Clients</h3>
+            <p>
+              Trusted by leading brands and individuals alike.
+            </p>
+          </div>
+          <div class="card">
+            <h3>👥 50,000+ Guests Served</h3>
+            <p>Creating memorable experiences for every attendee.</p>
+          </div>
+
+          
         </div>
       </div>
     </section>
