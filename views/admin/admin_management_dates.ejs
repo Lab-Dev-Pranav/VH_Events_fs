@@ -42,13 +42,14 @@
       const cancelDelete = document.getElementById("cancelDelete");
       let selectedEvent = null;
 
-      <% const clientEvents = JSON.stringify(events.map(e => ({
-        id: e._id,
-        title: e.name,
-        start: new Date(e.date).toISOString().split('T')[0],
-        allDay: true
-      }))); %>
-      const events = <%- clientEvents %>;
+      const events = <%- JSON.stringify((events || []).map(function(e) {
+        return {
+          id: e._id,
+          title: e.name,
+          start: new Date(e.date).toISOString().split('T')[0],
+          allDay: true
+        };
+      })) %>;
 
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
