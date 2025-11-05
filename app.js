@@ -10,7 +10,7 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const MongoStore = require('connect-mongo');
 const methodOverride = require('method-override');
-const ManagementProfile = require("./models/management"); 
+const ManagementProfile = require("./models/management");
 if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
@@ -197,6 +197,14 @@ app.post('/admin/gallery/upload', isLoggedIn, isAdmin, cloudinaryUpload.single('
 app.post('/admin/gallery/delete/:id', isLoggedIn, isAdmin, adminController.deleteGalleryMedia);
 app.post('/admin/gallery/star/:id', isLoggedIn, isAdmin, adminController.toggleStarGalleryMedia);
 app.get('/admin/managementprofiles', isLoggedIn, isAdmin, adminController.renderAdminManagementProfiles);
+app.get('/admin/dates', isLoggedIn, isAdmin, adminController.renderAdminManagementDates);
+
+app.get('/admin/dates/add-sample-event', isLoggedIn, isAdmin, adminController.addSampleEventData);
+
+app.get('/admin/event/new', isLoggedIn, isAdmin, adminController.renderNewEventForm);
+app.post('/admin/event', isLoggedIn, isAdmin, adminController.createEvent);
+app.get('/admin/event/:id/editeventdet', isLoggedIn, isAdmin, adminController.renderEditEventDetails);
+app.post('/admin/event/:id/editeventdet', isLoggedIn, isAdmin, adminController.updateEventVolunteers);
 
 // -------------------MANAGEMENT---------------------------------
 

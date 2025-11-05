@@ -1,0 +1,188 @@
+<% layout('/layouts/boilerplate') %>
+
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+</head>
+
+<body>
+  <h2>📅 Monthly Event Calendar</h2>
+  <div id="calendar"></div>
+
+  <!-- ✅ Right-click context menu -->
+  <div id="contextMenu" class="hidden">
+    <ul>
+      <li id="viewEvent">🔍 View Details</li>
+      <li id="deleteEvent">❌ Delete Event</li>
+    </ul>
+  </div>
+
+  <!-- ✅ Fullscreen Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>🗑️ Confirm Deletion</h3>
+      <p>Please type the event name below to confirm deletion:</p>
+      <p id="eventToDelete" class="event-name"></p>
+      <input type="text" id="confirmInput" placeholder="Type event name..." />
+      <div class="modal-actions">
+        <button id="cancelDelete" class="cancel">Cancel</button>
+        <button id="confirmDelete" class="delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const calendarEl = document.getElementById("calendar");
+      const contextMenu = document.getElementById("contextMenu");
+      const deleteModal = document.getElementById("deleteModal");
+      const eventToDelete = document.getElementById("eventToDelete");
+      const confirmInput = document.getElementById("confirmInput");
+      const confirmDelete = document.getElementById("confirmDelete");
+      const cancelDelete = document.getElementById("cancelDelete");
+      let selectedEvent = null;
+
+      <% const clientEvents = JSON.stringify(events.map(e => ({
+        id: e._id,
+        title: e.name,
+        start: new Date(e.date).toISOString().split('T')[0],
+        allDay: true
+      }))); %>
+      const events = <%- clientEvents %>;
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: '85vh',
+        selectable: true,
+        editable: false,
+        events,
+        nowIndicator: true,
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek'
+        },
+
+        eventClick(info) {
+          // Open the edit-event-details page (editeventdet) to add/remove volunteers
+          window.open(`/admin/event/${info.event.id}/editeventdet`, '_blank');
+        },
+
+        eventDidMount(info) {
+          info.el.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            selectedEvent = info.event;
+            contextMenu.style.top = e.pageY + 'px';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.classList.remove('hidden');
+          });
+        },
+
+        dateClick(info) {
+          const date = info.dateStr;
+          window.location.href = `/admin/event/new?date=${encodeURIComponent(date)}`;
+        }
+      });
+
+      calendar.render();
+
+      document.addEventListener('click', () => {
+        contextMenu.classList.add('hidden');
+      });
+
+      document.getElementById("viewEvent").addEventListener('click', () => {
+        if (selectedEvent) {
+          window.open(`/admin/event/${selectedEvent.id}/editeventdet`, '_blank');
+        }
+        contextMenu.classList.add('hidden');
+      });
+
+      document.getElementById("deleteEvent").addEventListener('click', () => {
+        if (!selectedEvent) return;
+        eventToDelete.textContent = selectedEvent.title;
+        confirmInput.value = "";
+        deleteModal.classList.remove('hidden');
+        setTimeout(() => confirmInput.focus(), 100);
+        contextMenu.classList.add('hidden');
+      });
+
+      cancelDelete.addEventListener('click', () => {
+        deleteModal.classList.add('hidden');
+      });
+
+      confirmDelete.addEventListener('click', async () => {
+        if (!selectedEvent) return;
+        if (confirmInput.value.trim().toLowerCase() === selectedEvent.title.toLowerCase()) {
+          try {
+            const res = await fetch(`/admin/event/${selectedEvent.id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              selectedEvent.remove();
+              alert(`🗑️ Event "${selectedEvent.title}" deleted!`);
+            } else {
+              alert("⚠️ Server failed to delete event.");
+            }
+          } catch (err) {
+            alert("❌ Network error while deleting event.");
+          }
+          deleteModal.classList.add('hidden');
+        } else {
+          alert("❌ Event name did not match. Try again.");
+        }
+      });
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f6f7fb;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 { text-align: center; margin-bottom: 1rem; color: #333; }
+    #calendar {
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 10px;
+    }
+    #contextMenu {
+      position: absolute; background: white; border: 1px solid #ddd;
+      border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000; width: 160px;
+    }
+    #contextMenu.hidden { display: none; }
+    #contextMenu ul { list-style: none; margin: 0; padding: 8px 0; }
+    #contextMenu ul li { padding: 8px 14px; cursor: pointer; transition: background 0.2s; }
+    #contextMenu ul li:hover { background: #f0f0f0; }
+
+    .modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      display: flex; justify-content: center; align-items: center; z-index: 2000;
+    }
+    .modal.hidden { display: none; }
+    .modal-content {
+      background: white; padding: 2rem; border-radius: 12px;
+      text-align: center; width: 90%; max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: fadeIn 0.3s ease;
+    }
+    .modal-content h3 { margin-top: 0; color: #e63946; }
+    .event-name { font-weight: bold; margin: 0.5rem 0; color: #444; }
+    input#confirmInput {
+      width: 100%; padding: 10px; border-radius: 8px;
+      border: 1px solid #ccc; margin-top: 10px; outline: none; font-size: 1rem;
+    }
+    .modal-actions {
+      margin-top: 1rem; display: flex; justify-content: space-between; gap: 10px;
+    }
+    .modal-actions button {
+      flex: 1; padding: 10px; font-size: 1rem; border-radius: 8px;
+      cursor: pointer; transition: background 0.3s; border: none;
+    }
+    .modal-actions .cancel { background: #ccc; }
+    .modal-actions .cancel:hover { background: #bbb; }
+    .modal-actions .delete { background: #e63946; color: white; }
+    .modal-actions .delete:hover { background: #c53030; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95);} to { opacity: 1; transform: scale(1);} }
+  </style>
+</body>

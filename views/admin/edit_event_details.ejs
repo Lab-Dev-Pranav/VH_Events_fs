@@ -1,0 +1,147 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="container mt-4">
+  <h2>Edit Event: <%= event.name %></h2>
+  <form action="/admin/event/<%= event._id %>/editeventdet" method="POST">
+    <div class="mb-3">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control" value="<%= event.date ? event.date.toISOString().slice(0,10) : '' %>" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <input type="text" class="form-control" value="<%= event.location || '' %>" readonly>
+    </div>
+
+    <!-- 🧍 Assign Volunteers (Overall) -->
+    <div class="mb-3">
+      <label class="form-label">Assign Volunteers (Overall)</label>
+      <select class="form-select" id="assignedVolunteers" name="assignedVolunteers" multiple>
+        <% managementProfiles.forEach(profile => { %>
+          <option value="<%= profile._id %>" 
+            <%= event.assignedVolunteers.some(a => String(a) === String(profile._id)) ? 'selected' : '' %>>
+            <%= profile.fullName %>
+          </option>
+        <% }) %>
+      </select>
+      <small class="text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple volunteers.</small>
+    </div>
+
+    <!-- 🏢 Department Assignments -->
+    <div id="departmentsContainer">
+      <h4>Department Assignments</h4>
+
+      <% const departmentOptions = [
+        "Registration",
+        "Hospitality",
+        "Logistics",
+        "Stage Management",
+        "Security",
+        "Media",
+        "Decoration",
+        "Coordination",
+        "Catering",
+        "Technical Support"
+      ]; %>
+
+      <% if (event.departmentAssignments.length === 0) { %>
+        <div class="department-entry mb-3">
+          <div class="row">
+            <!-- 🧍 Volunteers first -->
+            <div class="col-md-6">
+              <label class="form-label">Assigned Volunteers</label>
+              <select class="form-select department-volunteers" multiple name="dept_volunteers[]">
+                <% managementProfiles.forEach(profile => { %>
+                  <option value="<%= profile._id %>"><%= profile.fullName %></option>
+                <% }); %>
+              </select>
+            </div>
+            <!-- 🏢 Department dropdown -->
+            <div class="col-md-6">
+              <label class="form-label">Department Name</label>
+              <select class="form-select department-name" name="dept_name[]">
+                <option value="">Select Department</option>
+                <% departmentOptions.forEach(dept => { %>
+                  <option value="<%= dept %>"><%= dept %></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <% event.departmentAssignments.forEach(function(dept) { %>
+          <div class="department-entry mb-3">
+            <div class="row">
+              <!-- 🧍 Volunteers first -->
+              <div class="col-md-6">
+                <label class="form-label">Assigned Volunteers</label>
+                <select class="form-select department-volunteers" multiple name="dept_volunteers[]">
+                  <% managementProfiles.forEach(profile => { %>
+                    <option value="<%= profile._id %>" 
+                      <%= (dept.assignedVolunteers || []).some(a => String(a) === String(profile._id)) ? 'selected' : '' %>>
+                      <%= profile.fullName %>
+                    </option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <!-- 🏢 Department dropdown -->
+              <div class="col-md-6">
+                <label class="form-label">Department Name</label>
+                <select class="form-select department-name" name="dept_name[]">
+                  <option value="">Select Department</option>
+                  <% departmentOptions.forEach(option => { %>
+                    <option value="<%= option %>" <%= option === dept.department ? 'selected' : '' %>><%= option %></option>
+                  <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+
+      <button type="button" class="btn btn-secondary mb-3" onclick="addDepartment()">Add Department</button>
+    </div>
+
+    <input type="hidden" id="departmentAssignments" name="departmentAssignments" value="">
+    <button type="submit" class="btn btn-primary">Save Volunteers</button>
+  </form>
+</div>
+
+<script>
+function addDepartment() {
+  const container = document.getElementById('departmentsContainer');
+  const template = document.querySelector('.department-entry').cloneNode(true);
+  template.querySelector('.department-name').selectedIndex = 0;
+  template.querySelectorAll('.department-volunteers option').forEach(opt => opt.selected = false);
+  container.insertBefore(template, container.querySelector('button'));
+}
+
+document.querySelector('form').addEventListener('submit', function(e) {
+  const departments = [];
+  document.querySelectorAll('.department-entry').forEach(dept => {
+    const name = dept.querySelector('.department-name').value;
+    const volunteers = Array.from(dept.querySelector('.department-volunteers').selectedOptions).map(opt => opt.value);
+    if (name || volunteers.length) {
+      departments.push({ department: name, assignedVolunteers: volunteers });
+    }
+  });
+  document.getElementById('departmentAssignments').value = JSON.stringify(departments);
+});
+</script>
+
+<style>
+.department-entry {
+  border: 1px solid #dee2e6;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background: #fafafa;
+}
+select[multiple] {
+  height: 120px;
+}
+h4 {
+  margin-top: 2rem;
+}
+</style>

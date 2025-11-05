@@ -30,16 +30,14 @@
   <div class="container py-5">
     <div class="text-center mb-4">
       <h1 class="text-primary fw-bold"><i class="bi bi-people-fill me-2"></i>All Management Profiles</h1>
-      <p class="text-muted">Here you can view and manage all management profiles.</p>
-
       <!-- Search Input -->
       <input type="text" id="profileSearch" class="form-control w-50 mx-auto"
         placeholder="Search profile by name..."
-        style="border: 2px solid #bfa14a; border-radius: 8px; padding: 10px;">
+        style="border: 2px solid #d5b965; border-radius: 8px; padding: 10px;">
     </div>
 
     <!-- Profiles Grid -->
-    <div class="row g-4" id="profileContainer">
+    <div class="row g-1" id="profileContainer">
       <% managementProfiles.forEach((profile, index) => { %>
         <div class="col-md-6 col-lg-5 profile-card">
           <div id="card-<%= index %>" class="card shadow-lg h-100" style="border-radius: 16px;">

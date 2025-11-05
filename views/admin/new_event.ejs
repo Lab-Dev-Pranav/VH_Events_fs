@@ -1,0 +1,64 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="container mt-4">
+  <h2>Create New Event</h2>
+  
+  <form action="/admin/event" method="POST">
+    <!-- Event Name -->
+    <div class="mb-3">
+      <label for="name" class="form-label">Event Name</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+
+    <!-- Event Date -->
+    <div class="mb-3">
+      <label for="date" class="form-label">Date</label>
+      <input type="date" class="form-control" id="date" name="date" value="<%= date %>" required>
+    </div>
+
+    <!-- Location -->
+    <div class="mb-3">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" class="form-control" id="location" name="location" required>
+    </div>
+
+    <!-- Volunteer Requirements -->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="totalVolunteers" class="form-label">Total Volunteers Needed</label>
+          <input type="number" class="form-control" id="totalVolunteers" name="totalVolunteers" min="1" required>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="maleReq" class="form-label">Male Volunteers Required</label>
+          <input type="number" class="form-control" id="maleReq" name="maleReq" min="0" required>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="femaleReq" class="form-label">Female Volunteers Required</label>
+          <input type="number" class="form-control" id="femaleReq" name="femaleReq" min="0" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- extra info  -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Event Description</label>
+      <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-primary">Create Event</button>
+  </form>
+</div>
+
+<style>
+.container {
+  max-width: 700px;
+}
+</style>
