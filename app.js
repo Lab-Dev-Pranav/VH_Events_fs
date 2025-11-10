@@ -203,8 +203,23 @@ app.get('/admin/dates/add-sample-event', isLoggedIn, isAdmin, adminController.ad
 
 app.get('/admin/event/new', isLoggedIn, isAdmin, adminController.renderNewEventForm);
 app.post('/admin/event', isLoggedIn, isAdmin, adminController.createEvent);
+app.delete('/admin/event/:id', isLoggedIn, isAdmin, adminController.deleteEvent);
+
+
+
+
+
 app.get('/admin/event/:id/editeventdet', isLoggedIn, isAdmin, adminController.renderEditEventDetails);
+
+// /admin/event/<%= event._id %>/remove-volunteer
+app.post('/admin/event/:id/remove-volunteer', isLoggedIn, isAdmin, adminController.removeVolunteer);
+
+app.post('/admin/event/:id/update-details', isLoggedIn, isAdmin, adminController.updateEventDetails);
+
+// /admin/event/<%= event._id %>/editeventdet
 app.post('/admin/event/:id/editeventdet', isLoggedIn, isAdmin, adminController.updateEventVolunteers);
+
+
 
 // -------------------MANAGEMENT---------------------------------
 

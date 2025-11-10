@@ -1,5 +1,6 @@
 const Media = require("../models/media");
 const ManagementProfile = require("../models/management");
+const Event = require("../models/event");
 const Booking = require("../models/booking");
 const nodemailer = require("nodemailer");
 
@@ -13,7 +14,7 @@ exports.renderHome = async (req, res) => {
   let sortedProfiles = [];
   for (const dept of bestDepartmentsequence) {
     const group = managementProfiles.filter(p => p.bestDepartment === dept);
-    // Males first, then females (assuming gender is 'Male' or 'Female')
+
     group.sort((a, b) => {
       if (a.gender === b.gender) return 0;
       if (a.gender === 'Male') return -1;
@@ -76,7 +77,16 @@ ${TextArea}
 exports.renderProfile = async (req, res) => {
   const bookings = await Booking.find({ user: req.user._id });
   const managementProfile = await ManagementProfile.findOne({ user: req.user._id });
-  res.render("profile/profile.ejs", { bookings, managementProfile });
+
+  // want to display all the assigned events in profile section if which is assigned to that particular vol
+  const assignedEvents = await Event.find({ 'departmentAssignments.assignedVolunteers': managementProfile._id });
+  // Populate additional event details if needed
+  await Event.populate(assignedEvents, { path: 'departmentAssignments.assignedVolunteers', select: 'fullName' });
+  // sort by dates
+  assignedEvents.sort((a, b) => a.date - b.date);
+  
+
+  res.render("profile/profile.ejs", { bookings, managementProfile , assignedEvents });
 };
 
 exports.renderGallery = async (req, res) => {

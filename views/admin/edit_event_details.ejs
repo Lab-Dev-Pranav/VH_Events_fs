@@ -1,147 +1,178 @@
 <%- layout('layouts/boilerplate') %>
 
 <div class="container mt-4">
-  <h2>Edit Event: <%= event.name %></h2>
-  <form action="/admin/event/<%= event._id %>/editeventdet" method="POST">
-    <div class="mb-3">
-      <label class="form-label">Date</label>
-      <input type="date" class="form-control" value="<%= event.date ? event.date.toISOString().slice(0,10) : '' %>" readonly>
-    </div>
+  <h2 class="mb-4">Manage Event: <%= event.name %></h2>
 
-    <div class="mb-3">
-      <label class="form-label">Location</label>
-      <input type="text" class="form-control" value="<%= event.location || '' %>" readonly>
-    </div>
+  <!-- Editable Event Details -->
+  <div class="card shadow-sm mb-4 p-4">
+    <h4 class="mb-3">Edit Event Details</h4>
 
-    <!-- 🧍 Assign Volunteers (Overall) -->
-    <div class="mb-3">
-      <label class="form-label">Assign Volunteers (Overall)</label>
-      <select class="form-select" id="assignedVolunteers" name="assignedVolunteers" multiple>
-        <% managementProfiles.forEach(profile => { %>
-          <option value="<%= profile._id %>" 
-            <%= event.assignedVolunteers.some(a => String(a) === String(profile._id)) ? 'selected' : '' %>>
-            <%= profile.fullName %>
-          </option>
-        <% }) %>
-      </select>
-      <small class="text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple volunteers.</small>
-    </div>
+    <form action="/admin/event/<%= event._id %>/update-details" method="POST">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">Event Name</label>
+          <input type="text" class="form-control" name="name" value="<%= event.name %>" required>
+        </div>
 
-    <!-- 🏢 Department Assignments -->
-    <div id="departmentsContainer">
-      <h4>Department Assignments</h4>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">Date</label>
+          <input type="date" class="form-control" name="date" 
+            value="<%= event.date ? new Date(event.date).toISOString().split('T')[0] : '' %>" required>
+        </div>
 
-      <% const departmentOptions = [
-        "Registration",
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">Location</label>
+          <input type="text" class="form-control" name="location" value="<%= event.location %>" required>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">Status</label>
+          <select class="form-select" name="status" required>
+            <% const statuses = ['Pending', 'Ongoing', 'Completed', 'Upcoming']; %>
+            <% statuses.forEach(s => { %>
+              <option value="<%= s %>" <%= event.status === s ? 'selected' : '' %>><%= s %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="col-12 mb-3">
+          <label class="form-label fw-bold">Description</label>
+          <textarea class="form-control" name="description" rows="3"><%= event.description %></textarea>
+        </div>
+      </div>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-success px-4">Save Changes</button>
+      </div>
+      <br>
+    </form>
+  </div>
+
+  <!-- Add Volunteer Form -->
+  <div class="card shadow-sm mb-4 p-4">
+    <h4 class="mb-3">Add Volunteer to Department</h4>
+
+    <form action="/admin/event/<%= event._id %>/editeventdet" method="POST">
+      <% const departments = [
         "Hospitality",
         "Logistics",
-        "Stage Management",
-        "Security",
-        "Media",
-        "Decoration",
-        "Coordination",
-        "Catering",
-        "Technical Support"
+        "RSVP",
+        "Shadows",
+        "Rituals",
+        "F&B",
+        "Production",
+        "Technical",
+        "Vendor Management",
+        "Over-All",
+        "VIP & Guest Management",
+        "Security & Crowd Control",
+        "Backstage Coordination",
+        "Entertainment Coordination"
       ]; %>
 
-      <% if (event.departmentAssignments.length === 0) { %>
-        <div class="department-entry mb-3">
-          <div class="row">
-            <!-- 🧍 Volunteers first -->
-            <div class="col-md-6">
-              <label class="form-label">Assigned Volunteers</label>
-              <select class="form-select department-volunteers" multiple name="dept_volunteers[]">
-                <% managementProfiles.forEach(profile => { %>
-                  <option value="<%= profile._id %>"><%= profile.fullName %></option>
-                <% }); %>
-              </select>
-            </div>
-            <!-- 🏢 Department dropdown -->
-            <div class="col-md-6">
-              <label class="form-label">Department Name</label>
-              <select class="form-select department-name" name="dept_name[]">
-                <option value="">Select Department</option>
-                <% departmentOptions.forEach(dept => { %>
-                  <option value="<%= dept %>"><%= dept %></option>
-                <% }) %>
-              </select>
-            </div>
+      <div class="assign-box mb-3 p-4 shadow-sm">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Volunteer</label>
+            <select class="form-select" name="volunteer" required>
+              <option value="">Select Volunteer</option>
+              <% managementProfiles.forEach(vol => { %>
+                <option value="<%= vol._id %>">
+                  <!-- //profile photo  -->
+                  <img src="<%= vol.profilePhoto || '/images/default-profile.png' %>" alt="<%= vol.fullName || vol.name %>" class="img-fluid rounded-circle" width="30">
+                  <%= vol.fullName || vol.name || (vol.firstName + ' ' + vol.lastName) %>(<%= vol.gender %>)
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Department</label>
+            <select class="form-select" name="department" required>
+              <option value="">Select Department</option>
+              <% departments.forEach(dept => { %>
+                <option value="<%= dept %>"><%= dept %></option>
+              <% }) %>
+            </select>
           </div>
         </div>
-      <% } else { %>
-        <% event.departmentAssignments.forEach(function(dept) { %>
-          <div class="department-entry mb-3">
-            <div class="row">
-              <!-- 🧍 Volunteers first -->
-              <div class="col-md-6">
-                <label class="form-label">Assigned Volunteers</label>
-                <select class="form-select department-volunteers" multiple name="dept_volunteers[]">
-                  <% managementProfiles.forEach(profile => { %>
-                    <option value="<%= profile._id %>" 
-                      <%= (dept.assignedVolunteers || []).some(a => String(a) === String(profile._id)) ? 'selected' : '' %>>
-                      <%= profile.fullName %>
-                    </option>
-                  <% }); %>
-                </select>
-              </div>
+      </div>
 
-              <!-- 🏢 Department dropdown -->
-              <div class="col-md-6">
-                <label class="form-label">Department Name</label>
-                <select class="form-select department-name" name="dept_name[]">
-                  <option value="">Select Department</option>
-                  <% departmentOptions.forEach(option => { %>
-                    <option value="<%= option %>" <%= option === dept.department ? 'selected' : '' %>><%= option %></option>
-                  <% }); %>
-                </select>
-              </div>
-            </div>
-          </div>
-        <% }) %>
-      <% } %>
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary">Add Volunteer</button>
+      </div>
+      <br>
+    </form>
+  </div>
 
-      <button type="button" class="btn btn-secondary mb-3" onclick="addDepartment()">Add Department</button>
-    </div>
-
-    <input type="hidden" id="departmentAssignments" name="departmentAssignments" value="">
-    <button type="submit" class="btn btn-primary">Save Volunteers</button>
-  </form>
+  <!-- Department Assignments -->
+  <div class="card shadow-sm p-4">
+    <h4 class="mb-3">Current Department Assignments</h4>
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Department</th>
+          <th>Assigned Volunteers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (event.departmentAssignments && event.departmentAssignments.length > 0) { %>
+          <% event.departmentAssignments.forEach((dept, idx) => { %>
+            <tr>
+              <td><%= idx + 1 %></td>
+              <td><%= dept.department %></td>
+              <td>
+                <% if (dept.assignedVolunteers && dept.assignedVolunteers.length > 0) { %>
+                  <% dept.assignedVolunteers.forEach(v => { %>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div>
+                        • <%= v.fullName || v.name || (v.firstName + ' ' + v.lastName) %>
+                        - <i class="text-muted"><%= v.gender %></i>
+                      </div>
+                      <form action="/admin/event/<%= event._id %>/remove-volunteer" method="POST" class="d-inline">
+                        <input type="hidden" name="department" value="<%= dept.department %>">
+                        <input type="hidden" name="volunteerId" value="<%= v._id || v %>">
+                        <button class="remove-btn"><span class="front text">Remove</span></button>
+                      </form>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <span class="text-muted">No volunteers yet</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="3" class="text-center text-muted">No department assignments yet</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<script>
-function addDepartment() {
-  const container = document.getElementById('departmentsContainer');
-  const template = document.querySelector('.department-entry').cloneNode(true);
-  template.querySelector('.department-name').selectedIndex = 0;
-  template.querySelectorAll('.department-volunteers option').forEach(opt => opt.selected = false);
-  container.insertBefore(template, container.querySelector('button'));
-}
-
-document.querySelector('form').addEventListener('submit', function(e) {
-  const departments = [];
-  document.querySelectorAll('.department-entry').forEach(dept => {
-    const name = dept.querySelector('.department-name').value;
-    const volunteers = Array.from(dept.querySelector('.department-volunteers').selectedOptions).map(opt => opt.value);
-    if (name || volunteers.length) {
-      departments.push({ department: name, assignedVolunteers: volunteers });
-    }
-  });
-  document.getElementById('departmentAssignments').value = JSON.stringify(departments);
-});
-</script>
-
 <style>
-.department-entry {
-  border: 1px solid #dee2e6;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  background: #fafafa;
-}
-select[multiple] {
-  height: 120px;
-}
-h4 {
-  margin-top: 2rem;
-}
+  .assign-box {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #f9f9f9;
+  }
+
+  .card {
+    border-radius: 14px;
+  }
+
+  /* Remove Button */
+  .remove-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .remove-btn:hover {
+    text-decoration: underline;
+  }
 </style>

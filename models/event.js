@@ -28,42 +28,35 @@ const EventSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
-    // description
     description: {
       type: String,
       trim: true,
     },
 
-    // ✅ Department-wise assignments
+    // ✅ Department-wise volunteer assignments
     departmentAssignments: [
       {
         department: {
-          type: String, // e.g. "Hospitality", "Logistics", "Media"
+          type: String, // e.g. "Hospitality", "Media", etc.
+          trim: true,
         },
         assignedVolunteers: [
           {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'ManagementProfile', // linking to your volunteer profile model
+            ref: 'ManagementProfile', // volunteer model reference
           },
         ],
       },
     ],
 
-    // ✅ All assigned volunteers (flattened list)
-    assignedVolunteers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ManagementProfile',
-      },
-    ],
+    // ✅ Event status
+status: {
+  type: String,
+  enum: ['Pending', 'Ongoing', 'Completed', 'Upcoming'], // ✅ added Upcoming
+  default: 'Pending'
+}
 
-    // ✅ Status tracking
-    status: {
-      type: String,
-      enum: ['Upcoming', 'Ongoing', 'Completed'],
-      default: 'Upcoming',
-    },
+
   },
   { timestamps: true }
 );

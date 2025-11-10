@@ -67,6 +67,7 @@ exports.createEvent = async (req, res) => {
       name,
       date,
       location,
+      description,
       totalVolunteers,
       maleReq,
       femaleReq,
@@ -114,6 +115,7 @@ exports.createEvent = async (req, res) => {
       name,
       date: eventDate,
       location,
+      description: description || '',
       totalVolunteers: total,
       maleReq: male,
       femaleReq: female,
@@ -131,99 +133,245 @@ exports.createEvent = async (req, res) => {
     res.redirect('/admin/dates');
   }
 };
-// Render edit event details (add/remove volunteers)
+
+// DELETE EVENT by ID
+exports.deleteEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+
+    // Attempt to delete from DB
+    const deletedEvent = await Event.findByIdAndDelete(eventId);
+
+    if (!deletedEvent) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    res.json({ success: true, message: "Event deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+
 exports.renderEditEventDetails = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const event = await Event.findById(eventId).lean();
+
+    const event = await Event.findById(eventId)
+      .populate({
+        path: 'departmentAssignments.assignedVolunteers',
+        select: '_id fullName name firstName lastName gender department',
+      })
+      .lean();
+
     if (!event) {
       req.flash('error', 'Event not found');
       return res.redirect('/admin/dates');
     }
-    const managementProfiles = await ManagementProfile.find({}).sort({ name: 1 }).lean();
-    // Ensure assignedVolunteers is an array for template
-    event.assignedVolunteers = event.assignedVolunteers || [];
+
+
+    const managementProfiles = await ManagementProfile.find({})
+      .select('_id fullName name gender department')
+      .sort({ name: 1 })
+      .lean();
+
+  
     event.departmentAssignments = event.departmentAssignments || [];
-    res.render('admin/edit_event_details.ejs', { event, managementProfiles });
+
+
+    event.volunteerReq = (event.maleReq || 0) + (event.femaleReq || 0);
+
+
+    res.render('admin/edit_event_details', {
+      event,
+      managementProfiles
+    });
+
   } catch (err) {
-    console.error('Error loading edit event details:', err);
+    console.error('❌ Error loading edit event details:', err.message);
     req.flash('error', 'Unable to load event details');
     res.redirect('/admin/dates');
   }
 };
 
-// Update event volunteers & department assignments
+
+
+exports.updateEventDetails = async (req, res) => {
+  try {
+    const { name, date, location, description, status } = req.body;
+    const eventId = req.params.id;
+
+    await Event.findByIdAndUpdate(eventId, {
+      name,
+      date,
+      location,
+      description,
+      status,
+    });
+
+    req.flash('success', 'Event details updated successfully!');
+    res.redirect(`/admin/event/${eventId}/editeventdet`);
+  } catch (err) {
+    console.error('Error updating event details:', err);
+    req.flash('error', 'Failed to update event: ' + err.message);
+    res.redirect('/admin/dates');
+  }
+};
+
+
+
+// Add a volunteer to an event (with department assignment)
 exports.updateEventVolunteers = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const { assignedVolunteers, departmentAssignments } = req.body;
+    const { volunteer, department } = req.body;
 
-    // Normalize assignedVolunteers
-    let assigned = [];
-    if (assignedVolunteers) {
-      if (Array.isArray(assignedVolunteers)) assigned = assignedVolunteers;
-      else assigned = [assignedVolunteers];
+    if (!volunteer || !department) {
+      req.flash('error', 'Please select both volunteer and department.');
+      return res.redirect(`/admin/event/${eventId}/editeventdet`);
     }
 
-    // Parse departments safely
-    let departments = [];
-    if (departmentAssignments) {
-      try {
-        departments = typeof departmentAssignments === 'string'
-          ? JSON.parse(departmentAssignments)
-          : departmentAssignments;
-        departments = departments.map(d => ({
-          department: d.department || '',
-          assignedVolunteers: Array.isArray(d.assignedVolunteers) ? d.assignedVolunteers : (d.assignedVolunteers ? [d.assignedVolunteers] : [])
-        }));
-      } catch (e) {
-        console.warn('Invalid departmentAssignments JSON provided when updating event:', e);
-        departments = [];
+    // Find event and populate only departmentAssignments
+    const event = await Event.findById(eventId)
+      .populate('departmentAssignments.assignedVolunteers');
+
+    if (!event) {
+      req.flash('error', 'Event not found.');
+      return res.redirect('/admin/dates');
+    }
+
+    // Check if department already exists
+    let departmentAssignment = event.departmentAssignments.find(
+      (d) => d.department === department
+    );
+
+    if (departmentAssignment) {
+      const alreadyAssigned = departmentAssignment.assignedVolunteers.some(
+        (v) => v._id.toString() === volunteer
+      );
+      if (alreadyAssigned) {
+        req.flash('info', 'This volunteer is already assigned to that department.');
+        return res.redirect(`/admin/event/${eventId}/editeventdet`);
       }
+      departmentAssignment.assignedVolunteers.push(volunteer);
+    } else {
+      // Add a new department entry
+      event.departmentAssignments.push({
+        department,
+        assignedVolunteers: [volunteer],
+      });
     }
 
-    await Event.findByIdAndUpdate(eventId, {
-      assignedVolunteers: assigned,
-      departmentAssignments: departments
-    });
+    // Save updated event
+    await event.save();
 
-    req.flash('success', 'Event volunteers updated');
-    res.redirect('/admin/dates');
+    req.flash('success', 'Volunteer successfully added to department!');
+    res.redirect(`/admin/event/${eventId}/editeventdet`);
   } catch (err) {
     console.error('Error updating event volunteers:', err);
-    req.flash('error', 'Failed to update event');
+    req.flash('error', 'Failed to add volunteer: ' + err.message);
     res.redirect('/admin/dates');
   }
 };
 
+
+
+
+exports.removeVolunteer = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const { department, volunteerId } = req.body;
+
+    if (!volunteerId || !department) {
+      req.flash('error', 'Invalid request: missing volunteer or department.');
+      return res.redirect(`/admin/event/${eventId}/editeventdet`);
+    }
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      req.flash('error', 'Event not found.');
+      return res.redirect('/admin/dates');
+    }
+
+    // Ensure the arrays exist
+    event.departmentAssignments = event.departmentAssignments || [];
+    event.assignedVolunteers = event.assignedVolunteers || [];
+
+    // Remove from departmentAssignments
+    const dept = event.departmentAssignments.find(d => d.department === department);
+    if (dept && Array.isArray(dept.assignedVolunteers)) {
+      dept.assignedVolunteers = dept.assignedVolunteers.filter(
+        v => v.toString() !== volunteerId.toString()
+      );
+    }
+
+    // Remove from top-level assignedVolunteers
+    event.assignedVolunteers = event.assignedVolunteers.filter(
+      v => v.toString() !== volunteerId.toString()
+    );
+
+    await event.save();
+
+    req.flash('success', 'Volunteer removed successfully.');
+    res.redirect(`/admin/event/${eventId}/editeventdet`);
+  } catch (err) {
+    console.error('Error removing volunteer:', err);
+    req.flash('error', 'Failed to remove volunteer: ' + err.message);
+    res.redirect('/admin/dates');
+  }
+};
+
+
+
+
+// ------------============--------------
 // Send newsletter emails
 exports.sendNewsletterEmails = async (req, res) => {
   const { subject, message } = req.body;
-  const newsletters = await newsletterRouter.find({});
+
   try {
+    // Fetch all subscribers
+    const newsletters = await Newsletter.find({});
+    const emails = newsletters.map(n => n.email);
+
+    if (emails.length === 0) {
+      req.flash("error", "No subscribers found.");
+      return res.redirect("/admin/newsletters");
+    }
+
+    // Create transporter
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // use TLS
       auth: {
         user: process.env.VH_EVENTS_USER,
-        pass: process.env.VH_EVENTS_PASS,
+        pass: process.env.VH_EVENTS_PASS, // must be a Google App Password
       },
     });
-    for (const newsletter of newsletters) {
-      const mailOptions = {
-        from: `"VH Events Newsletter" <${process.env.VH_EVENTS_USER}>`,
-        to: newsletter.email,
-        subject: subject,
-        text: message,
-      };
-      await transporter.sendMail(mailOptions);
-    }
+
+    // Send to all subscribers
+    const mailOptions = {
+      from: `"VH Events Newsletter" <${process.env.VH_EVENTS_USER}>`,
+      to: emails.join(","), // send to all in one go
+      subject,
+      text: message,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    // console.log("✅ Newsletter sent to:", emails);
     req.flash("success", "Newsletter emails sent successfully!");
-    res.redirect("/");
+    res.redirect("/admin/newsletters");
   } catch (e) {
-    req.flash("error", "Error sending newsletter emails.");
+    console.error("❌ Newsletter error:", e);
+    req.flash("error", "Error sending newsletter emails. Please check server logs.");
     res.redirect("/admin/newsletters");
   }
 };
+
 
 // Render gallery upload page
 exports.renderGalleryUpload = async (req, res) => {
