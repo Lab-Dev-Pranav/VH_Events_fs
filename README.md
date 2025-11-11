@@ -196,26 +196,21 @@ Dedicated pages for client agreements, management agreements, privacy, and secur
 ├─ managementController.js — Profile management <br>
 ├─ newsletterController.js — Bulk email + subscriber handling <br>
 └─ commonController.js — Shared routes and rendering <br>
-<br>
 📁 **models/** <br>
 ├─ booking.js <br>
 ├─ management.js <br>
 ├─ media.js <br>
 ├─ newsletter.js <br>
 └─ user.js <br>
-<br>
 📁 **routes/** <br>
 └─ commen.js <br>
-<br>
 📁 **views/** <br>
 ├─ admin/ (dashboard, editEvent.ejs) <br>
 ├─ users/ <br>
 ├─ partials/ <br>
-<br>
 📁 **public/** <br>
 ├─ css/ <br>
 ├─ js/ <br>
-<br>
 📁 **uploads/**
 
 
