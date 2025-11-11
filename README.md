@@ -188,29 +188,35 @@ Dedicated pages for client agreements, management agreements, privacy, and secur
 ---
 
 ## 🏗️ Modules & Structure
-📁 controllers/
-├─ adminController.js # Dashboard + event edit features
-├─ authController.js # Login/signup/authentication
-├─ bookingController.js # Event booking and management
-├─ managementController.js # Profile management
-├─ newsletterController.js # Bulk email + subscriber handling
-└─ commonController.js # Shared routes and rendering
-📁 models/
-├─ booking.js
-├─ management.js
-├─ media.js
-├─ newsletter.js
-└─ user.js
-📁 routes/
-└─ commen.js
-📁 views/
-├─ admin/ (dashboard, editEvent.ejs)
-├─ users/
-├─ partials/
-📁 public/
-├─ css/
-├─ js/
-📁 uploads/
+
+📁 **controllers/** <br>
+├─ adminController.js — Dashboard + event edit features <br>
+├─ authController.js — Login/signup/authentication <br>
+├─ bookingController.js — Event booking and management <br>
+├─ managementController.js — Profile management <br>
+├─ newsletterController.js — Bulk email + subscriber handling <br>
+└─ commonController.js — Shared routes and rendering <br>
+<br>
+📁 **models/** <br>
+├─ booking.js <br>
+├─ management.js <br>
+├─ media.js <br>
+├─ newsletter.js <br>
+└─ user.js <br>
+<br>
+📁 **routes/** <br>
+└─ commen.js <br>
+<br>
+📁 **views/** <br>
+├─ admin/ (dashboard, editEvent.ejs) <br>
+├─ users/ <br>
+├─ partials/ <br>
+<br>
+📁 **public/** <br>
+├─ css/ <br>
+├─ js/ <br>
+<br>
+📁 **uploads/**
 
 
 ---
@@ -281,4 +287,3 @@ Admins manage all aspects: team, media, communications, events, and newsletters.
 ---
 
 > For more details, explore the codebase and EJS views for each feature and workflow.
-  
