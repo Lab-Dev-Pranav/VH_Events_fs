@@ -4,6 +4,9 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   isAdmin: { type: Boolean, default: false, immutable: true },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+
 });
 
 // Add the plugin

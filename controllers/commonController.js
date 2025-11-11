@@ -8,7 +8,21 @@ exports.renderHome = async (req, res) => {
   const starredMedia = await Media.find({ starred: true }).sort({ uploadedAt: -1 });
   const managementProfiles = await ManagementProfile.find({ powerhouse: true }).populate('user', 'email').sort({ createdAt: -1 });
 
-  const bestDepartmentsequence = [ 'Show Flow','Shadow', 'Production',  'Logistics', 'Hospitality', 'F&B', 'Ritual', 'Artist Coordination' ];
+ const bestDepartmentsequence = [
+  "Show Flow",
+  "Shadow",
+  "Production",
+  "Logistics",
+  "Hospitality",
+  "F&B",
+  "Ritual",
+  "Artist Coordination",
+  "Overall Management",
+  "Client Handling",
+  "Decor",
+  "Photography"
+];
+
 
   // Group by department in sequence, sort males first in each group
   let sortedProfiles = [];
@@ -22,6 +36,8 @@ exports.renderHome = async (req, res) => {
     });
     sortedProfiles = sortedProfiles.concat(group);
   }
+
+  console.log("Sorted Profiles:", sortedProfiles);
 
   res.render('home/home.ejs', { starredMedia, managementProfiles: sortedProfiles });
 };
@@ -75,19 +91,42 @@ ${TextArea}
 };
 
 exports.renderProfile = async (req, res) => {
-  const bookings = await Booking.find({ user: req.user._id });
-  const managementProfile = await ManagementProfile.findOne({ user: req.user._id });
+  try {
+    // Get bookings (might be empty array)
+    const bookings = await Booking.find({ user: req.user._id }) || [];
 
-  // want to display all the assigned events in profile section if which is assigned to that particular vol
-  const assignedEvents = await Event.find({ 'departmentAssignments.assignedVolunteers': managementProfile._id });
-  // Populate additional event details if needed
-  await Event.populate(assignedEvents, { path: 'departmentAssignments.assignedVolunteers', select: 'fullName' });
-  // sort by dates
-  assignedEvents.sort((a, b) => a.date - b.date);
-  
+    // Get management profile (might be null)
+    const managementProfile = await ManagementProfile.findOne({ user: req.user._id });
 
-  res.render("profile/profile.ejs", { bookings, managementProfile , assignedEvents });
+    // Prepare empty array first for safety
+    let assignedEvents = [];
+
+    // Only query assigned events if managementProfile exists
+    if (managementProfile) {
+      assignedEvents = await Event.find({
+        'departmentAssignments.assignedVolunteers': managementProfile._id
+      }).populate({
+        path: 'departmentAssignments.assignedVolunteers',
+        select: 'fullName'
+      });
+
+      // Sort by date safely (ignore undefined dates)
+      assignedEvents.sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
+    }
+
+    // Always render page with safe defaults
+    res.render("profile/profile.ejs", {
+      bookings,
+      managementProfile,
+      assignedEvents
+    });
+
+  } catch (err) {
+    console.error("Error rendering profile:", err);
+    res.status(500).send("Server error while rendering profile.");
+  }
 };
+  
 
 exports.renderGallery = async (req, res) => {
   const media = await Media.find().sort({ uploadedAt: -1 });

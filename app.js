@@ -126,9 +126,6 @@ app.get('/contact', commonController.renderContact);
 app.post('/contact', commonController.handleContact);
 
 
-
-
-
 const managementController = require('./controllers/managementController');
 // Profile
 app.get('/profile', isLoggedIn, commonController.renderProfile);
@@ -154,6 +151,14 @@ app.get('/login', authController.renderLogin);
 app.post('/register', authController.register);
 app.post('/login', ...authController.login);
 app.get('/logout', authController.logout);
+
+app.get('/forgot-password', authController.renderForgotPasswordemail);
+
+// forgot-password
+app.post('/forgot-password', authController.handleForgotPassword);
+
+app.get("/reset-password/:token", authController.renderResetPasswordPage);
+app.post("/reset-password/:token", authController.handleResetPassword);
 
 
 
