@@ -9,8 +9,11 @@
                   <h5>VH EVENT PLANNER</h5>
             </a>
             <i class="bx bx-menu" id="menu-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" fill="#fcbb57" width="20" height="20" viewBox="0 0 50 50">
-                        <path d="M 3 9 A 1.0001 1.0001 0 1 0 3 11 L 47 11 A 1.0001 1.0001 0 1 0 47 9 L 3 9 z M 3 24 A 1.0001 1.0001 0 1 0 3 26 L 47 26 A 1.0001 1.0001 0 1 0 47 24 L 3 24 z M 3 39 A 1.0001 1.0001 0 1 0 3 41 L 47 41 A 1.0001 1.0001 0 1 0 47 39 L 3 39 z"></path>
+                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" fill="#fcbb57" width="20" height="20"
+                        viewBox="0 0 50 50">
+                        <path
+                              d="M 3 9 A 1.0001 1.0001 0 1 0 3 11 L 47 11 A 1.0001 1.0001 0 1 0 47 9 L 3 9 z M 3 24 A 1.0001 1.0001 0 1 0 3 26 L 47 26 A 1.0001 1.0001 0 1 0 47 24 L 3 24 z M 3 39 A 1.0001 1.0001 0 1 0 3 41 L 47 41 A 1.0001 1.0001 0 1 0 47 39 L 3 39 z">
+                        </path>
                   </svg>
             </i>
             <!-- <div class="nav-bg"></div> -->
@@ -20,25 +23,59 @@
                   <li><a class="navbar-li-a" href="/booking">Book Yours</a></li>
                   <li><a class="navbar-li-a" href="/contact">Contact</a></li>
 
-                
-                  
+
+
 
                   <% if (currentUser) { %>
                         <li><a class="navbar-li-a" href="/profile">Profile</a></li>
-                    <li>
-                        <a href="/logout">
-                              <!-- Logout -->
-                              logout
-                        </a>
-                  </li>
-                  <% } else { %>
-                    <li>
-                        <a  href="/login">
-                              <!-- Login -->
-                              login
-                        </a>
-                  </li>
-                  <% } %>
+                        <li>
+                              <a href="/logout">
+                                    <svg fill="	#ffbf00" height="25px" width="25px" version="1.1" id="Capa_1"
+                                          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                          viewBox="-76.99 -76.99 538.95 538.95" xml:space="preserve" stroke="	#ffbf00"
+                                          stroke-width="24.253173">
+                                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                          </g>
+                                          <g id="SVGRepo_iconCarrier">
+                                                <g>
+                                                      <g id="Sign_Out">
+                                                            <path
+                                                                  d="M180.455,360.91H24.061V24.061h156.394c6.641,0,12.03-5.39,12.03-12.03s-5.39-12.03-12.03-12.03H12.03 C5.39,0.001,0,5.39,0,12.031V372.94c0,6.641,5.39,12.03,12.03,12.03h168.424c6.641,0,12.03-5.39,12.03-12.03 C192.485,366.299,187.095,360.91,180.455,360.91z">
+                                                            </path>
+                                                            <path
+                                                                  d="M381.481,184.088l-83.009-84.2c-4.704-4.752-12.319-4.74-17.011,0c-4.704,4.74-4.704,12.439,0,17.179l62.558,63.46H96.279 c-6.641,0-12.03,5.438-12.03,12.151c0,6.713,5.39,12.151,12.03,12.151h247.74l-62.558,63.46c-4.704,4.752-4.704,12.439,0,17.179 c4.704,4.752,12.319,4.752,17.011,0l82.997-84.2C386.113,196.588,386.161,188.756,381.481,184.088z">
+                                                            </path>
+                                                      </g>
+                                                      <g> </g>
+                                                      <g> </g>
+                                                      <g> </g>
+                                                      <g> </g>
+                                                      <g> </g>
+                                                      <g> </g>
+                                                </g>
+                                          </g>
+                                    </svg>
+                              </a>
+                        </li>
+                        <% } else { %>
+                              <li>
+                                    <a href="/login">
+                                          <svg width="28px" height="28px" viewBox="-0.72 -0.72 25.44 25.44"
+                                                fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffbf00"
+                                                stroke-width="0.00024000000000000003">
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                      stroke-linejoin="round"></g>
+                                                <g id="SVGRepo_iconCarrier">
+                                                      <path fill-rule="evenodd" clip-rule="evenodd"
+                                                            d="M8 6C8 3.79086 9.79086 2 12 2H17.5C19.9853 2 22 4.01472 22 6.5V17.5C22 19.9853 19.9853 22 17.5 22H12C9.79086 22 8 20.2091 8 18V17C8 16.4477 8.44772 16 9 16C9.55228 16 10 16.4477 10 17V18C10 19.1046 10.8954 20 12 20H17.5C18.8807 20 20 18.8807 20 17.5V6.5C20 5.11929 18.8807 4 17.5 4H12C10.8954 4 10 4.89543 10 6V7C10 7.55228 9.55228 8 9 8C8.44772 8 8 7.55228 8 7V6ZM12.2929 8.29289C12.6834 7.90237 13.3166 7.90237 13.7071 8.29289L16.7071 11.2929C17.0976 11.6834 17.0976 12.3166 16.7071 12.7071L13.7071 15.7071C13.3166 16.0976 12.6834 16.0976 12.2929 15.7071C11.9024 15.3166 11.9024 14.6834 12.2929 14.2929L13.5858 13L5 13C4.44772 13 4 12.5523 4 12C4 11.4477 4.44772 11 5 11L13.5858 11L12.2929 9.70711C11.9024 9.31658 11.9024 8.68342 12.2929 8.29289Z"
+                                                            fill="#ffbf00"></path>
+                                                </g>
+                                          </svg>
+                                    </a>
+                              </li>
+                              <% } %>
             </ul>
 
       </nav>
@@ -50,7 +87,7 @@
 
             menuIcon.addEventListener("click", () => {
                   // navbar.style.display = "block";
-                 
+
 
                   if (navbar.style.display === "block") {
                         navbar.style.display = "none";

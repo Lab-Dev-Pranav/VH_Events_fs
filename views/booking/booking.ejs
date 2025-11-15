@@ -1,8 +1,9 @@
 <% layout('/layouts/boilerplate') %>
+<% title = `Book Consultation | VH Events`; %>
 <body>
   <div class="container">
     <div class="row">
-      <div class="service-title-container col-md-10 offset-md-1 text-center">
+      <div class="service-title-containera col-md-10 offset-md-1 text-center">
         <h1>Book Your Consultation With Vh Events</h1>
       </div>
     </div>
@@ -71,3 +72,18 @@
     </form>
   </div>
 </body>
+
+
+<style>
+  .service-title-containera{
+    font-size: 10px;
+    color: gold;
+  }
+
+  /* // media Q */
+  @media (min-width: 768px) {
+    .service-title-containera{
+      font-size: 5px;
+    }
+  }
+</style>

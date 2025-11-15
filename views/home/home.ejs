@@ -1,5 +1,5 @@
 <% layout('/layouts/boilerplate') %>
-
+<% title = `VH Event Planner`; %>
 
 <body>
   <main class="main-one">
@@ -137,13 +137,15 @@
       <% if(item.type === 'image'){ %>
         <img src="<%= item.url %>" alt="gallery image">
       <% } else { %>
-        <video src="<%= item.url %>" preload="metadata" autoplay loop muted></video>
+        <video src="<%= item.url %>" preload="metadata"  loop muted></video>
       <% } %>
     </div>
   <% }) %>
        
       </div>
-      <a href="/gallery"> View Gallery -></a>
+      <a href="/gallery"> 
+        <button class="btn btn-warning">View Gallery</button>
+      </a>
     </div>
     <!-- Fullscreen Modal -->
     <div id="fullscreen-modal" class="fullscreen-modal">
@@ -354,13 +356,7 @@
     <div class="contact-btn">
       <h1>Ready to Plan Your Next Event With VH Events?</h1>
           
-          <p>Have Questions or Need Assistance?
-            <br />
-            <strong>Contact us today!</strong>
-          </p>
-          <a href="/contact" class="btn btn-warning">Contact Us</a>
 
-          <br />
           <p>Want to Make Your Event Unforgettable?
             <br />
             <strong>Book your free consultation now!</strong>
@@ -368,11 +364,21 @@
           <a href="/booking" class="btn btn-warning">Book Yours</a>
         
           <br />
+          
           <p>Want to be a part of our team?
             <br />
             <strong>Join us as a Management Member!</strong>
           </p>
           <a href="/management" class="btn btn-warning">Be a Management Member</a>
+
+          <br />
+           <p>Have Questions or Need Assistance?
+            <br />
+            <strong>Contact us today!</strong>
+          </p>
+          <a href="/contact" class="btn btn-warning">Contact Us</a>
+
+          <br />
     </div>
     <!-- contact btn end -->
 

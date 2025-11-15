@@ -123,12 +123,12 @@ exports.handleForgotPassword = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    console.log("Password reset email sent to:", user.email);
+    // console.log("Password reset email sent to:", user.email);
 
     req.flash("success", "Password reset instructions have been sent to your email.");
     res.redirect("/login");
   } catch (error) {
-    console.error("Error in handleForgotPassword:", error);
+    // console.error("Error in handleForgotPassword:", error);
     req.flash("error", "Something went wrong. Please try again later.");
     res.redirect("/forgot-password");
   }
@@ -154,7 +154,7 @@ exports.renderResetPasswordPage = async (req, res) => {
 
     res.render("login/reset-password.ejs", { token });
   } catch (err) {
-    console.error("Error rendering reset page:", err);
+    // console.error("Error rendering reset page:", err);
     req.flash("error", "Something went wrong. Try again.");
     res.redirect("/forgot-password");
   }
@@ -194,7 +194,7 @@ exports.handleResetPassword = async (req, res) => {
     req.flash("success", "Your password has been reset successfully! Please log in.");
     res.redirect("/login");
   } catch (err) {
-    console.error("Error in handleResetPassword:", err);
+    // console.error("Error in handleResetPassword:", err);
     req.flash("error", "Something went wrong. Please try again later.");
     res.redirect("/forgot-password");
   }

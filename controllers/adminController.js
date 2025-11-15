@@ -99,7 +99,7 @@ exports.createEvent = async (req, res) => {
           assignedVolunteers: Array.isArray(d.assignedVolunteers) ? d.assignedVolunteers : (d.assignedVolunteers ? [d.assignedVolunteers] : [])
         }));
       } catch (e) {
-        console.warn('Invalid departmentAssignments JSON provided, ignoring departments.', e);
+        // console.warn('Invalid departmentAssignments JSON provided, ignoring departments.', e);
         departments = [];
       }
     }
@@ -128,7 +128,7 @@ exports.createEvent = async (req, res) => {
     req.flash('success', 'Event created successfully!');
     res.redirect('/admin/dates');
   } catch (err) {
-    console.error('Error creating event:', err);
+    // console.error('Error creating event:', err);
     req.flash('error', 'Failed to create event: ' + err.message);
     res.redirect('/admin/dates');
   }
@@ -148,7 +148,7 @@ exports.deleteEvent = async (req, res) => {
 
     res.json({ success: true, message: "Event deleted successfully" });
   } catch (error) {
-    console.error("Error deleting event:", error);
+    // console.error("Error deleting event:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 }
@@ -189,7 +189,7 @@ exports.renderEditEventDetails = async (req, res) => {
     });
 
   } catch (err) {
-    console.error('❌ Error loading edit event details:', err.message);
+    // console.error('❌ Error loading edit event details:', err.message);
     req.flash('error', 'Unable to load event details');
     res.redirect('/admin/dates');
   }
@@ -213,7 +213,7 @@ exports.updateEventDetails = async (req, res) => {
     req.flash('success', 'Event details updated successfully!');
     res.redirect(`/admin/event/${eventId}/editeventdet`);
   } catch (err) {
-    console.error('Error updating event details:', err);
+    // console.error('Error updating event details:', err);
     req.flash('error', 'Failed to update event: ' + err.message);
     res.redirect('/admin/dates');
   }
@@ -269,7 +269,7 @@ exports.updateEventVolunteers = async (req, res) => {
     req.flash('success', 'Volunteer successfully added to department!');
     res.redirect(`/admin/event/${eventId}/editeventdet`);
   } catch (err) {
-    console.error('Error updating event volunteers:', err);
+    // console.error('Error updating event volunteers:', err);
     req.flash('error', 'Failed to add volunteer: ' + err.message);
     res.redirect('/admin/dates');
   }
@@ -317,7 +317,7 @@ exports.removeVolunteer = async (req, res) => {
     req.flash('success', 'Volunteer removed successfully.');
     res.redirect(`/admin/event/${eventId}/editeventdet`);
   } catch (err) {
-    console.error('Error removing volunteer:', err);
+    // console.error('Error removing volunteer:', err);
     req.flash('error', 'Failed to remove volunteer: ' + err.message);
     res.redirect('/admin/dates');
   }
@@ -366,7 +366,7 @@ exports.sendNewsletterEmails = async (req, res) => {
     req.flash("success", "Newsletter emails sent successfully!");
     res.redirect("/admin/newsletters");
   } catch (e) {
-    console.error("❌ Newsletter error:", e);
+    // console.error("❌ Newsletter error:", e);
     req.flash("error", "Error sending newsletter emails. Please check server logs.");
     res.redirect("/admin/newsletters");
   }
@@ -435,7 +435,7 @@ exports.renderAdminManagementDates = async (req, res) => {
     // 🧭 Render to EJS page
     res.render("admin/admin_management_dates", { events });
   } catch (err) {
-    console.error("Error fetching events:", err);
+    // console.error("Error fetching events:", err);
     res.status(500).send("Server Error: Unable to fetch events");
   }
 };
@@ -516,7 +516,7 @@ exports.addSampleEventData = async (req, res) => {
     req.flash('success', '✅ Sample events with department assignments added successfully!');
     res.redirect('/admin/dates');
   } catch (err) {
-    console.error('Error adding sample events:', err);
+    // console.error('Error adding sample events:', err);
     req.flash('error', 'Failed to add sample events: ' + err.message);
     res.redirect('/admin/dates');
   }

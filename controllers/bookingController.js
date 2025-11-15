@@ -67,7 +67,7 @@ exports.deleteBooking = async (req, res) => {
     req.flash("success", "Booking cancelled successfully.");
     res.redirect("/profile");
   } catch (e) {
-    console.error("Cancellation failed:", e);
+    // console.error("Cancellation failed:", e);
     req.flash("error", "There was an error cancelling your booking. Please try again.");
     res.redirect("/profile");
   }
