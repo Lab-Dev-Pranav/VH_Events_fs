@@ -57,7 +57,7 @@ exports.createProfile = async (req, res) => {
     req.flash("success", "Management profile created successfully!");
     res.redirect("/profile");
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     req.flash("error", "Error creating management profile.");
     res.redirect("/management");
   }
@@ -74,7 +74,7 @@ exports.deleteProfile = async (req, res) => {
     req.flash("success", "Management profile deleted successfully.");
     res.redirect("/profile");
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     req.flash("error", "Error deleting management profile.");
     res.redirect("/profile");
   }
@@ -99,7 +99,7 @@ exports.renderEditForm = async (req, res) => {
     }
     res.render("management/edit.ejs", { managementProfile });
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     req.flash("error", "Error fetching management profile for editing.");
     res.redirect("/profile");
   }
@@ -158,7 +158,7 @@ exports.updateProfile = async (req, res) => {
     req.flash("success", "Management profile updated successfully!");
     res.redirect("/profile");
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     req.flash("error", "Error updating management profile.");
     res.redirect(`/management/${req.params.id}/edit`);
   }

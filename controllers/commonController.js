@@ -37,7 +37,7 @@ exports.renderHome = async (req, res) => {
     sortedProfiles = sortedProfiles.concat(group);
   }
 
-  console.log("Sorted Profiles:", sortedProfiles);
+  // console.log("Sorted Profiles:", sortedProfiles);
 
   res.render('home/home.ejs', { starredMedia, managementProfiles: sortedProfiles });
 };
@@ -84,7 +84,7 @@ ${TextArea}
     req.flash("success", "Your message has been sent successfully!");
     res.redirect("/contact");
   } catch (error) {
-    console.error("Email sending error:", error);
+    // console.error("Email sending error:", error);
     req.flash("error", "Error sending email ❗ PLEASE CONTACT US BY 9588626847 OR vh.eventplanner25@gmail.com");
     res.redirect("/contact");
   }
@@ -122,7 +122,7 @@ exports.renderProfile = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Error rendering profile:", err);
+    // console.error("Error rendering profile:", err);
     res.status(500).send("Server error while rendering profile.");
   }
 };
