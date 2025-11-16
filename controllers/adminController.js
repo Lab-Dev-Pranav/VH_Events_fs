@@ -324,53 +324,44 @@ exports.removeVolunteer = async (req, res) => {
 };
 
 
-
-
-// ------------============--------------
-// Send newsletter emails
 exports.sendNewsletterEmails = async (req, res) => {
   const { subject, message } = req.body;
 
   try {
-    // Fetch all subscribers
-    const newsletters = await Newsletter.find({});
-    const emails = newsletters.map(n => n.email);
-
-    if (emails.length === 0) {
+    const subscribers = await Newsletter.find({});
+    // const subscribers = ["pranavpatilg2004@gmail.com", "dipak.3012patil@gmail.com"]; // Test emails
+    if (subscribers.length === 0) {
       req.flash("error", "No subscribers found.");
       return res.redirect("/admin/newsletters");
     }
 
-    // Create transporter
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // use TLS
+      service: "gmail",
       auth: {
         user: process.env.VH_EVENTS_USER,
-        pass: process.env.VH_EVENTS_PASS, // must be a Google App Password
+        pass: process.env.VH_EVENTS_PASS, // MUST be Google App Password
       },
     });
 
-    // Send to all subscribers
-    const mailOptions = {
-      from: `"VH Events Newsletter" <${process.env.VH_EVENTS_USER}>`,
-      to: emails.join(","), // send to all in one go
-      subject,
-      text: message,
-    };
+    for (const sub of subscribers) {
+      await transporter.sendMail({
+        from: `"VH Events Newsletter" <${process.env.VH_EVENTS_USER}>`,
+        to: sub.email,
+        // to: sub, // for testing with array of emails
+        subject,
+        text: message,
+      });
+    }
 
-    await transporter.sendMail(mailOptions);
-
-    // console.log("✅ Newsletter sent to:", emails);
-    req.flash("success", "Newsletter emails sent successfully!");
+    req.flash("success", "Newsletter sent successfully!");
     res.redirect("/admin/newsletters");
   } catch (e) {
-    // console.error("❌ Newsletter error:", e);
-    req.flash("error", "Error sending newsletter emails. Please check server logs.");
+    console.error("Newsletter error:", e);
+    req.flash("error", "Error sending newsletter emails.");
     res.redirect("/admin/newsletters");
   }
 };
+
 
 
 // Render gallery upload page
