@@ -329,7 +329,7 @@ exports.sendNewsletterEmails = async (req, res) => {
 
   try {
     const subscribers = await Newsletter.find({});
-    // const subscribers = ["pranavpatilg2004@gmail.com", "dipak.3012patil@gmail.com"]; // Test emails
+    // const subscribers = ["pranavpatilg2004@gmail.com", "dipak.3012patil@gmail.com"]; // test emails
     if (subscribers.length === 0) {
       req.flash("error", "No subscribers found.");
       return res.redirect("/admin/newsletters");
@@ -339,7 +339,7 @@ exports.sendNewsletterEmails = async (req, res) => {
       service: "gmail",
       auth: {
         user: process.env.VH_EVENTS_USER,
-        pass: process.env.VH_EVENTS_PASS, // MUST be Google App Password
+        pass: process.env.VH_EVENTS_PASS,
       },
     });
 
