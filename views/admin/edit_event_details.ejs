@@ -131,6 +131,7 @@
                       <div>
                         • <%= v.fullName || v.name || (v.firstName + ' ' + v.lastName) %>
                         - <i class="text-muted"><%= v.gender %></i>
+                        
                       </div>
                       <form action="/admin/event/<%= event._id %>/remove-volunteer" method="POST" class="d-inline">
                         <input type="hidden" name="department" value="<%= dept.department %>">
