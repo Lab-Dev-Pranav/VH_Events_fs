@@ -70,7 +70,7 @@
 .navbar-list li .navbar-li-a,
 .footer-col .links li a {
   position: relative;
-  color: #ffffff;
+  color: #ffbf34;
   transition: color 0.3s ease;
 }
 
@@ -144,7 +144,7 @@
 
 /* ---------- OPEN MOBILE MENU (with animation) ---------- */
 .navbar-expanded {
-  background-color: #ffb81fdf;
+  background-color: #ffffffe1;
   position: absolute;
   top: 53px;
   left: 0;

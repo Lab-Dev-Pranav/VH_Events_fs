@@ -321,7 +321,7 @@
       
       /* Back box */
       .box1 {
-        background-color: #d25d5d;
+        background-color: #b4b4b4;
         z-index: 1;
         top: -100px;
         left: 200px;
@@ -340,7 +340,7 @@
         z-index: 2;
         top: 10px;
         left: 10px;
-        background-color: #73d25d;
+        background-color: #b4b4b4;
       }
 
       .box2 img{
