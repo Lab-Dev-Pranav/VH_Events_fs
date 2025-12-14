@@ -19,12 +19,22 @@
 
     <% if (managementProfile) { %>
       <button
-        class="btn btn-outline-primary ms-4 mt-3"
+        class=" OMPBTN btn btn-outline-primary ms-4 "
         data-bs-toggle="modal"
         data-bs-target="#managementProfileModal">
         <i class="bi bi-arrows-fullscreen"></i> Open Management Profile
       </button>
     <% } %>
+
+    <style>
+    .OMPBTN {
+      width: 250px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, box-shadow 0.3s;
+      margin: 30px 0px 0px 0px;
+    }
+    </style>
 
     <% if (currentUser.isAdmin) { %>
       <form class="p-to-admin mt-2" action="/admin" method="GET">
@@ -101,6 +111,7 @@
 
     <% if (!bookings || bookings.length === 0) { %>
       <p>No bookings yet.</p>
+      <br><br><br><br>
     <% } else { %>
       <ul class="list-unstyled">
         <% bookings.forEach(booking => { %>
