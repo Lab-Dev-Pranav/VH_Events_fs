@@ -113,7 +113,7 @@ exports.handleForgotPassword = async (req, res) => {
       from: `"VH Events" <${process.env.VH_EVENTS_USER}>`,
       subject: "Password Reset Request",
       html: `
-        <h2>Hello ${user.name || "User"},</h2>
+        <h2>Hello ${user.email || "User"},</h2>
         <p>You requested a password reset. Click the link below to reset your password:</p>
         <p><a href="${resetURL}" target="_blank">${resetURL}</a></p>
         <p>This link will expire in 15 minutes.</p>
