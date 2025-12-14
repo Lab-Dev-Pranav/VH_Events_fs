@@ -85,25 +85,25 @@ exports.handleForgotPassword = async (req, res) => {
       return res.redirect("/forgot-password");
     }
 
-    // 1️⃣ Generate a reset token
+    // generate a reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
 
-    // 2️⃣ Hash the token before saving (security best practice)
+    // hash the token before saving (security best practice)
     const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    // 3️⃣ Save token + expiry in user record
+    // save token + expiry in user record
     user.resetPasswordToken = hashedToken;
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // expires in 15 mins
     await user.save();
 
-    // 4️⃣ Create reset URL
+    //  create reset URL
     const resetURL = `${req.protocol}://${req.get("host")}/reset-password/${resetToken}`;
 
-    // 5️⃣ Send email with nodemailer
+    // sSend email with nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.VH_EVENTS_USER, // your Gmail
+        user: process.env.VH_EVENTS_USER, // your gmail
         pass: process.env.VH_EVENTS_PASS, // your app password
       },
     });
