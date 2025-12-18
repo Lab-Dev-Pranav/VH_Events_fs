@@ -77,37 +77,47 @@ exports.handleForgotPassword = async (req, res) => {
   // console.log("Forgot password requested for:", email);
 
   try {
+    console.log("S 1")
     const user = await User.findOne({ email });
     // console.log("user:", user);
 
+    console.log("S 2")
     if (!user) {
       req.flash("error", "No account with that email found.");
       return res.redirect("/forgot-password");
     }
 
+    console.log("S 3")
     // generate a reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
 
+    console.log("S 4")
     // hash the token before saving (security best practice)
     const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
+    console.log("S 5")
     // save token + expiry in user record
     user.resetPasswordToken = hashedToken;
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // expires in 15 mins
     await user.save();
 
+    console.log("S 6")
     //  create reset URL
     const resetURL = `${req.protocol}://${req.get("host")}/reset-password/${resetToken}`;
 
+    console.log("S 7")
     // sSend email with nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: process.env.VH_EVENTS_USER, // your gmail
         pass: process.env.VH_EVENTS_PASS, // your app password
+        debug: true, // Enable debugging
+        logger: true, // Log information
       },
     });
 
+    console.log("S 8")
     const mailOptions = {
       to: user.email,
       from: `"VH Events" <${process.env.VH_EVENTS_USER}>`,
@@ -121,14 +131,17 @@ exports.handleForgotPassword = async (req, res) => {
       `,
     };
 
+    console.log("S 9")
     await transporter.sendMail(mailOptions);
 
     // console.log("Password reset email sent to:", user.email);
 
+    console.log("S 10 success")
     req.flash("success", "Password reset instructions have been sent to your email.");
     res.redirect("/login");
   } catch (error) {
     // console.error("Error in handleForgotPassword:", error);
+    console.log("S 11 error")
     req.flash("error", "Something went wrong. Please try again later.");
     res.redirect("/forgot-password");
   }
