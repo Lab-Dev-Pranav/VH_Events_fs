@@ -142,6 +142,7 @@ exports.handleForgotPassword = async (req, res) => {
   } catch (error) {
     // console.error("Error in handleForgotPassword:", error);
     console.log("S 11 error")
+    console.error("Error in handleForgotPassword:", error);
     req.flash("error", "Something went wrong. Please try again later.");
     res.redirect("/forgot-password");
   }
